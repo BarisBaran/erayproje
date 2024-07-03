@@ -1,0 +1,34 @@
+pipeline {
+    agent any
+
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Proje kaynak kodunu GitHub'dan klonlama
+                git branch: 'main', url: 'https://github.com/BarisBaran/erayproje.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                script {
+                    // Docker görüntüsünü oluşturma
+                    sh 'docker build -t $DOCKER_IMAGE .'
+                }
+            }
+        }
+
+
+        stage('Deploy') {
+            steps {
+                script {
+                    // Docker konteynerini çalıştırma
+                    sh 'docker run -d --name proje_adi -p 7545:7545 $DOCKER_IMAGE'
+                }
+            }
+        }
+    }
+
+
+}
